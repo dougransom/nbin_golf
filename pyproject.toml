@@ -1,0 +1,26 @@
+[build-system]
+requires = ["flit_core >=3.0.0,<4"]
+build-backend = "flit_core.buildapi"
+
+[tool.flit.metadata]
+module="nbin_golf"
+author="Doug Ransom"
+author-email="doug.ransom@gmail.com"
+home-page="https://github.com/dougransom/nbin_golf"
+description-file="README.md"
+
+requires=[
+    "pandas >= 1.1.4",
+	"numpy"
+]
+requires-python=">=3.8"
+classifiers=["Intended Audience :: Financial and Insurance Industry",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+	"Development Status :: 4 - Beta"
+]
+keywords="nbin,croesus"
+
+ 
+[tool.flit.scripts]
+croesus_to_nbin_tradelist = "nbin_golf.croesus_to_nbin_tradelist"
