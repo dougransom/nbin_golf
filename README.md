@@ -22,7 +22,7 @@ If you have the sourced cloned from github:
 Currently the only command available is **croesus_to_nbin_tradelist**.
 
 
-usage: Converts a Croesus generated (and somewhat difficult to read)  tradelist into the (completely abstruse) Mutual Fund Bulk comma seperated value (csv) file
+usage: Converts a [Croesus](https://www.croesus.com/) generated (and somewhat difficult to read)  tradelist into the (completely abstruse) Mutual Fund Bulk comma seperated value (csv) file
 used by [National Bank Independent Network](https://www.nbin.ca/).  By default croesus creates a .txt file opened in excel which is rather akward, but with multiple steps you can save the .txt file as a .xlsx file when you performa the save step in excel.   If you forget and save as a .txt file,  you can open the .txt file in excel and then save as an xlsx file.
 
 The output file must be edited.  You must verify the file is correct to your satisfaction. 
