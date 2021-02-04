@@ -139,10 +139,9 @@ import argparse
 
 description = """Converts a Croesus generated tradelist into a Mutual Fund Bulk comma seperated value (csv) file
 used by National Bank Independent Network.  By default croesus creates a .txt file which is hard to work with, but with 
-multiple steps you can save the .txt file as a .xslx file.  
+multiple steps you can save the .txt file as a .xlsx file.  
 
-The output file must be edited.  You must verify the file is correct to your satisfaction and remove the first column 
-in order to be compatible with the National Bank Independent Network bulk mutual fund format.  
+The output file must be edited.  You must verify the file is correct to your satisfaction.    
 
 The bulk mutual fund trade list will be saved in AO_xxxx_yyyymmdd_n.csv where
 xxxx is the advisor code, yyyymmdd is the ISO date, and n is the sequence number.  
