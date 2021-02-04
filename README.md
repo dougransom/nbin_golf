@@ -2,7 +2,7 @@
 
 The  nbin_golf project aims to provide some scripts to manipulate Croesus trade lists and various file formats used by National Bank Independent Network.
 
-#Installing
+## Installing
 
 First, install Python   3.8 or later.  [Choose the options to add python to your system path, and install for all users](https://docs.python.org/3.8/using/windows.html).
 
@@ -17,7 +17,7 @@ If you have the sourced cloned from github:
 - Install with `flit install --symlink`
 
 
-#Running 
+## Running 
 
 Currently the only command available is **croesus_to_nbin_tradelist**.
 
