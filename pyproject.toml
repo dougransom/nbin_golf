@@ -23,4 +23,4 @@ keywords="nbin,croesus"
 
  
 [tool.flit.scripts]
-croesus_to_nbin_tradelist = "nbin_golf.croesus_to_nbin_tradelist"
+croesus_to_nbin_tradelist = "nbin_golf.croesus_to_nbin_tradelist:main"

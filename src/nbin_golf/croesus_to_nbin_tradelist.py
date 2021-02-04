@@ -56,7 +56,7 @@ def process_file(infile,outfile):
     if not "Sell All" in df.columns:
         df['Sell All']=False
     df['Sell All'] =  df['Sell All'].replace(np.nan,False)
-    print(f"\nsell all\n {df['Sell All']}")
+#    print(f"\nsell all\n {df['Sell All']}")
 
     if False:
         #this is for reading csv, currently unused
@@ -65,26 +65,26 @@ def process_file(infile,outfile):
         def fn(str):
             return str.replace(",","")
         df[mvsc]=df[mvsc].apply(fn)
-        print(df[mvsc])
+#        print(df[mvsc])
 
         #now convert to numeric
         df[mvsc]=pd.to_numeric(df[mvsc])
 
 
     global template
-    print(f"df \n{df}")
+#    print(f"df \n{df}")
     excel_template_path=getTemplateFileName()
     print(f"Reading {excel_template_path}") 
     template=pd.read_excel(excel_template_path)
     trades=pd.DataFrame(columns=template.columns)
-    print(f"Blank trades {trades}")
+#    print(f"Blank trades {trades}")
 
     trades=df.apply(order,axis=1,result_type="expand")
     trades.columns = template.columns
     trade_mask = trades["Source identification"]!="No Trade"
     trades=trades[trade_mask]
-    print(f"Trades \n{trades}\n {trades.to_csv()}")
-    trades.to_csv(ofile)
+#    print(f"Trades \n{trades}\n {trades.to_csv()}")
+    trades.to_csv(ofile,index=False)
 
 
 
@@ -95,7 +95,7 @@ def order(row):
     order_type=str(row["Type"])
     company_code=symbol[0:3]
     fund_code_number=symbol[3:]
-    print(f"\n Company code {company_code} Fund Code {fund_code_number} amount {read_dollar_amount} Symbol {symbol} Security {security}" )
+#    print(f"\n Company code {company_code} Fund Code {fund_code_number} amount {read_dollar_amount} Symbol {symbol} Security {security}" )
     ignore_row=True
     if ignore_row := (security[0] != '9'):
         print(f"Warning {symbol} not a fund code, ignored")
@@ -108,6 +108,7 @@ def order(row):
         trade_code=OrderType.BUY.value
         quantity=read_quantity
         row_dividend_option=dividend_option
+         
     else:
         if sell_all:
             trade_amount_type = AmountTypeCode.ALL_SHARES
@@ -116,9 +117,10 @@ def order(row):
             dollar_amount=read_dollar_amount
             quantity=-1*read_quantity
 
+
         row_dividend_option=""
         trade_code=OrderType.SELL.value
-
+         
     front_cols=[company_code,source_id,fund_code_number,\
         no_dash_account,trade_code,"",trade_amount_type.value,blank_gross]
     
@@ -185,14 +187,14 @@ for mutual fund bulk trading in any particular day.   """)
 
 
 def main():
+    global dividend_option, default_trade_amount_type
     args = parser.parse_args()
-    print(f"Args ok {args}")
+#    print(f"Args ok {args}")
     dividend_option = 4 if args.d == "c" else 1  # 1 is reinvest, 4 is cash
     default_trade_amount_type = AmountTypeCode.DOLLAR_AMOUNT if args.amount_type == "dollars" else AmountTypeCode.SHARES
-    # Press the green button in the gutter to run the script.
-    print(args.croesus_generated_orders)
+#    print(args.croesus_generated_orders)
 
-    print(f"{sys.argv}")
+#    print(f"{sys.argv}")
     global infile, repcode,sequence_number,dt_v,source_id,ofile
     (infile, repcode, sequence_number) = (args.croesus_generated_orders,args.repcode,args.sequence_number)
 
@@ -205,7 +207,10 @@ def main():
     ofile=f"AO_{repcode}_{date_str}_{sequence_number}.csv"
     print(f"creating output file {ofile}")
     process_file(infile,ofile)
+    print("Returning 0")
+    return 0
 
 
 if __name__ == "__main__":
     main()
+ 
