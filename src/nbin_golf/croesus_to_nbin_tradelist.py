@@ -74,7 +74,9 @@ def process_file(infile,projectedfile,outfile,etpfile):
 
     print(f"\nprojected_df:\n{projected_df}")
 
-    df=pd.read_excel(infile)
+    df=pd.read_excel(infile,dtype = {"Security" : str} )
+    #remove whtiespace on the security column.
+    df["Security"]=df["Security"].str.strip()
 
 
 
@@ -108,9 +110,10 @@ def process_file(infile,projectedfile,outfile,etpfile):
     trades=pd.DataFrame(columns=template.columns)
 #    print(f"Blank trades {trades}")
 
+
     #find the trades that have to be entered by hand, if the "Security" number does
     #not start with "9"
-    manual_trades = df[ df["Security"].str[0] != '9'][["Account No.","Symbol", "Name",  "Type", "Quantity"] ]
+    manual_trades = df[ df["Security"].str[0] != '9'][["Account No.","Symbol", "Name",  "Type", "Quantity","Price Security Currency","Market Value Security Currency"] ]
     #bulk trades are the mutual fund orders that can be uploaded to nbin
     bulk_trades = df[df["Security"].str[0] == '9']
 
@@ -118,8 +121,10 @@ def process_file(infile,projectedfile,outfile,etpfile):
 
     trades=bulk_trades.apply(order,axis=1,result_type="expand")
     trades.columns = template.columns
+    print(f"\nBulk Trades\n{bulk_trades}\n")
 #    print(f"Trades \n{trades}\n {trades.to_csv()}")
     trades.to_csv(ofile,index=False)
+    manual_trades.to_csv(etpfile,index=False)
 
 
 
