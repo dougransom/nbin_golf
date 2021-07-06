@@ -58,7 +58,6 @@ def process_file(infile,projectedfile,outfile,etpfile):
     #.set_index(["Symbol", "Account No."])
     projected_df=pd.read_excel(projectedfile,skiprows=1)[["Account No.","Symbol","Qty Variation",  "Quantity"]]
     projected_df["Sell All"] = False
-    print(f"\nProjected df\n{projected_df}")
 
     #find all the orders to sell all by looking for sell orders with 0 remaining quantity
 
@@ -72,7 +71,6 @@ def process_file(infile,projectedfile,outfile,etpfile):
     projected_df=projected_df["Sell All"]
 
 
-    print(f"\nprojected_df:\n{projected_df}")
 
     df=pd.read_excel(infile,dtype = {"Security" : str} )
     #remove whtiespace on the security column.
@@ -82,11 +80,9 @@ def process_file(infile,projectedfile,outfile,etpfile):
 
     df.sort_values(["Account No.","Symbol","Type"],inplace=True)
     df = df.set_index(["Account No.","Symbol"])
-    print(f"\ndf\n{df} \nprojected_df \n{projected_df}")
 
     df = df.join(projected_df)
     df.reset_index(inplace=True)
-    print(f"\njoined df \n {df} " )
 
 
     if False:
@@ -103,12 +99,10 @@ def process_file(infile,projectedfile,outfile,etpfile):
 
 
     global template
-#    print(f"df \n{df}")
     excel_template_path=getTemplateFileName()
     print(f"Reading {excel_template_path}") 
     template=pd.read_excel(excel_template_path)
     trades=pd.DataFrame(columns=template.columns)
-#    print(f"Blank trades {trades}")
 
 
     #find the trades that have to be entered by hand, if the "Security" number does
@@ -122,7 +116,8 @@ def process_file(infile,projectedfile,outfile,etpfile):
     trades=bulk_trades.apply(order,axis=1,result_type="expand")
     trades.columns = template.columns
     print(f"\nBulk Trades\n{bulk_trades}\n")
-#    print(f"Trades \n{trades}\n {trades.to_csv()}")
+
+    print("Saving bulk and manual trades")
     trades.to_csv(ofile,index=False)
     manual_trades.to_csv(etpfile,index=False)
 
@@ -242,7 +237,7 @@ def main():
     print(f"\ninfile {infile} \nprojectedfile {projectedfile} \nrepcode {repcode} \nSequence Number {sequence_number} \ndate {date_str}")
     ofile=f"AO_{repcode}_{date_str}_{sequence_number}.csv"
     etpfile = f"ETP_AO_{repcode}_{date_str}_{sequence_number}.csv"
-    print(f"\ncreating bulk mutual fund output file {ofile}\nand a list of exchange-traded products {etpfile}")
+    print(f"\ncreating bulk mutual fund output file {ofile}\nand a list of exchange-traded products {etpfile}.  Remember to enter both types of orders.")
 
     process_file(infile,projectedfile,ofile,etpfile)
     print("Returning 0")
