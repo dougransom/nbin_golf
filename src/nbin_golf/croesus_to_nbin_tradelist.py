@@ -51,7 +51,10 @@ mvsc="Market Value Security Currency"
 def getTemplateFileName():
     return  Path(__file__).parent/"Mutual Fund File Template.xlsx"
 
-def process_file(infile,outfile):
+def process_file(infile,projectedfile,outfile,etpfile):
+    projected_df=pd.read_excel(projectedfile,skiprows=1).set_index(["Symbol","Account No."])[["Qty Variation",  "Quantity"] ].sort_index()
+
+    print(f"projected_df\n{projected_df}")
     df=pd.read_excel(infile)
     if not "Sell All" in df.columns:
         df['Sell All']=False
@@ -175,8 +178,12 @@ otherwise.
 """
 
 
+croesus_projected_help="""The projected portfolio oputput of croesus.  This is used along with the generated
+orders to product the spreadsheet required by nbin.  If a 0 unit balance of mutual funds are detected, a sell all order
+is generated"""
 
 parser.add_argument("croesus_generated_orders",help=croesus_help)
+parser.add_argument("croesus_projected_portfolio",help = croesus_projected_help)
 parser.add_argument("repcode",help="""A repcode to be used in the file name.  It can be any string, but you would be wise
                               to use any of your own repcodes.""")
 parser.add_argument("sequence_number",help="""A number to append to the file name, in case you submit more than one file
@@ -194,18 +201,19 @@ def main():
 #    print(args.croesus_generated_orders)
 
 #    print(f"{sys.argv}")
-    global infile, repcode,sequence_number,dt_v,source_id,ofile
-    (infile, repcode, sequence_number) = (args.croesus_generated_orders,args.repcode,args.sequence_number)
-
+    global infile, projectedfile,repcode,sequence_number,dt_v,source_id,ofile,etpfile
+    (infile, projectedfile, repcode, sequence_number) = (args.croesus_generated_orders,args.croesus_projected_portfolio,args.repcode,args.sequence_number)
     dt_v = dt.datetime.now().date()
     date_str=f"{dt_v}".replace("-","")
 
     source_id=repcode
 
-    print(f"infile {infile} repcode {repcode} Sequence Number {sequence_number} date {date_str}")
+    print(f"\ninfile {infile} \nprojectedfile {projectedfile} \nrepcode {repcode} \nSequence Number {sequence_number} \ndate {date_str}")
     ofile=f"AO_{repcode}_{date_str}_{sequence_number}.csv"
-    print(f"creating output file {ofile}")
-    process_file(infile,ofile)
+    etpfile = f"ETP_AO_{repcode}_{date_str}_{sequence_number}.csv"
+    print(f"\ncreating bulk mutual fund output file {ofile}\nand a list of exchange-traded products {etpfile}")
+
+    process_file(infile,projectedfile,ofile,etpfile)
     print("Returning 0")
     return 0
 
