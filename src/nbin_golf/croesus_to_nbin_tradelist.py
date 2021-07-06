@@ -52,10 +52,39 @@ def getTemplateFileName():
     return  Path(__file__).parent/"Mutual Fund File Template.xlsx"
 
 def process_file(infile,projectedfile,outfile,etpfile):
-    projected_df=pd.read_excel(projectedfile,skiprows=1).set_index(["Symbol","Account No."])[["Qty Variation",  "Quantity"] ].sort_index()
 
-    print(f"projected_df\n{projected_df}")
+    #read the croesus projected portfolio to determine quantity variations.
+    #this will be used to edit the trade list orders.
+    #.set_index(["Symbol", "Account No."])
+    projected_df=pd.read_excel(projectedfile,skiprows=1)[["Account No.","Symbol","Qty Variation",  "Quantity"]]
+    projected_df["Sell All"] = False
+    print(f"\nProjected df\n{projected_df}")
+
+    #find all the orders to sell all by looking for sell orders with 0 remaining quantity
+
+    projected_df.loc[ (projected_df["Qty Variation"] < 0) & (projected_df["Quantity"] == 0),"Sell All"] = True
+    projected_df.sort_values(["Account No.","Symbol"],inplace=True)
+    projected_df = projected_df.set_index(["Account No.","Symbol"])
+
+    #we only want the "Sell All" column from the projected portfolio. some of the other columns have a different
+    #meaning thant the columns with the same name in the generated orders.
+
+    projected_df=projected_df["Sell All"]
+
+
+    print(f"\nprojected_df:\n{projected_df}")
+
     df=pd.read_excel(infile)
+
+
+
+    df.sort_values(["Account No.","Symbol","Type"],inplace=True)
+    df = df.set_index(["Account No.","Symbol"])
+    print(f"\ndf\n{df} \nprojected_df \n{projected_df}")
+
+    df = df.join(projected_df)
+    print(f"\njoined df \n {df} " )
+
     if not "Sell All" in df.columns:
         df['Sell All']=False
     df['Sell All'] =  df['Sell All'].replace(np.nan,False)
