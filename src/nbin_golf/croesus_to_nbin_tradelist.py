@@ -83,12 +83,9 @@ def process_file(infile,projectedfile,outfile,etpfile):
     print(f"\ndf\n{df} \nprojected_df \n{projected_df}")
 
     df = df.join(projected_df)
+    df.reset_index(inplace=True)
     print(f"\njoined df \n {df} " )
 
-    if not "Sell All" in df.columns:
-        df['Sell All']=False
-    df['Sell All'] =  df['Sell All'].replace(np.nan,False)
-#    print(f"\nsell all\n {df['Sell All']}")
 
     if False:
         #this is for reading csv, currently unused
