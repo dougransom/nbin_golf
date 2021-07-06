@@ -108,10 +108,16 @@ def process_file(infile,projectedfile,outfile,etpfile):
     trades=pd.DataFrame(columns=template.columns)
 #    print(f"Blank trades {trades}")
 
-    trades=df.apply(order,axis=1,result_type="expand")
+    #find the trades that have to be entered by hand, if the "Security" number does
+    #not start with "9"
+    manual_trades = df[ df["Security"].str[0] != '9'][["Account No.","Symbol", "Name",  "Type", "Quantity"] ]
+    #bulk trades are the mutual fund orders that can be uploaded to nbin
+    bulk_trades = df[df["Security"].str[0] == '9']
+
+    print(f"\nManual Trades\n{manual_trades}\n")
+
+    trades=bulk_trades.apply(order,axis=1,result_type="expand")
     trades.columns = template.columns
-    trade_mask = trades["Source identification"]!="No Trade"
-    trades=trades[trade_mask]
 #    print(f"Trades \n{trades}\n {trades.to_csv()}")
     trades.to_csv(ofile,index=False)
 
@@ -125,10 +131,7 @@ def order(row):
     company_code=symbol[0:3]
     fund_code_number=symbol[3:]
 #    print(f"\n Company code {company_code} Fund Code {fund_code_number} amount {read_dollar_amount} Symbol {symbol} Security {security}" )
-    ignore_row=True
-    if ignore_row := (security[0] != '9'):
-        print(f"Warning {symbol} not a fund code, ignored")
-        return [symbol]+["No Trade"]*(-1+len(template.columns))
+
 
     no_dash_account = account.replace("-","")
     trade_amount_type = default_trade_amount_type
@@ -197,10 +200,7 @@ parser.add_argument("--amount_type", choices=['dollars','shares'],default="dolla
                     help = "orders to be submited in dollars or shares. default is dollars")
 
 parser.set_defaults(d='r')
-croesus_help="""The generated orders from a Croesus rebalancing activity, saved as a .xslx file.
-You may add a column to that .xslx file (in any position) called ‘Sell All’. 
-Place a ‘True’ in any row with a sell action, where you would like to sell all units.  Leave it blank
-otherwise.  
+croesus_help="""The generated orders from a Croesus rebalancing activity, saved as a .xslx file. 
 """
 
 
