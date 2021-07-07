@@ -22,12 +22,12 @@ If you have the sourced cloned from github:
 Currently the only command available is **croesus_to_nbin_tradelist**.
 
 
-usage: Converts a [Croesus](https://www.croesus.com/) generated (and somewhat difficult to read)  tradelist into the (completely abstruse) Mutual Fund Bulk comma seperated value (csv) file
-used by [National Bank Independent Network](https://www.nbin.ca/).  By default croesus creates a .txt file opened in excel which is rather akward, but with multiple steps you can save the .txt file as a .xlsx file when you performa the save step in excel.   If you forget and save as a .txt file,  you can open the .txt file in excel and then save as an xlsx file.
+usage: Converts a Croesus generated tradelist into a Mutual Fund Bulk comma seperated value (csv) file
+used by National Bank Independent Network.  By default croesus creates a .txt file which is hard to work with, but with 
+multiple steps you can save the .txt file as a .xlsx file.  
 
-The output file must be edited.  You must verify the file is correct to your satisfaction. 
+The output file must be edited.  You must verify the file is correct to your satisfaction.    
 
- 
 The bulk mutual fund trade list will be saved in AO_xxxx_yyyymmdd_n.csv where
 xxxx is the advisor code, yyyymmdd is the ISO date, and n is the sequence number.  
 
@@ -41,28 +41,25 @@ generated tradelist ‘Sell All’, and put True in that column for rows in whic
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
        [-h] [-d {c,r}] [--amount_type {dollars,shares}]
-       croesus_generated_orders repcode sequence_number
+       croesus_generated_orders croesus_projected_portfolio repcode
+       sequence_number
+Converts a Croesus generated tradelist into a Mutual Fund Bulk comma seperated value (csv) file
+used by National Bank Independent Network.  By default croesus creates a .txt file which is hard to work with, but with 
+multiple steps you can save the .txt file as a .xlsx file.  
 
-positional arguments:
-  croesus_generated_orders
-                        The generated orders from a Croesus rebalancing
-                        activity, saved as a .xslx file. You may add a column
-                        to that .xslx file (in any position) called ‘Sell
-                        All’. Place a ‘True’ in any row with a sell action,
-                        where you would like to sell all units. Leave it blank
-                        otherwise.
-  repcode               A repcode to be used in the file name. It can be any
-                        string, but you would be wise to use any of your own
-                        repcodes.
-  sequence_number       A number to append to the file name, in case you
-                        submit more than one file for mutual fund bulk trading
-                        in any particular day.
+The output file must be edited.  You must verify the file is correct to your satisfaction.    
 
-optional arguments:
-  -h, --help            show this help message and exit
-  -d {c,r}              c for cash dividends, r for reinvest dividends
-                        (default)
-  --amount_type {dollars,shares}
-                        orders to be submited in dollars or shares. default is
-                        dollars
+The bulk mutual fund trade list will be saved in AO_xxxx_yyyymmdd_n.csv where
+xxxx is the advisor code, yyyymmdd is the ISO date, and n is the sequence number.  
+
+Note orders are buy and sell only.  You can request the buys and sells are in dollar or shares.
+
+An attempt is made to strip any orders for securities that do not have fundserv codes.
+
+If you would like to sell all units of a  particular security, you can add a column to the Croesus
+generated tradelist ‘Sell All’, and put True in that column for rows in which you would like to sell all units.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
 
